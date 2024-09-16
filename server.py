@@ -4,7 +4,7 @@ import keypad as keypad
 
 host = ""
 port = 5560
-useKeypad = False
+useKeypad = True
 
 def setupSocketServer():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,19 +38,9 @@ def GET():
     encrypted_message = enctypt_message("Hello World. What is UP? You GOodD?")
     return encrypted_message
 
-
-def REPEAT(dataMessage):
-    return dataMessage[1] if len(dataMessage) > 1 else "No data provided"
-
 def dataTransfer(conn):
     conn.settimeout(60)  # Set a timeout for client connection
     try:
-        if useKeypad:
-            pad = keypad.Keypad()
-            keypad_input = pad.readKeypad()
-            print("Keypad input: ", keypad_input)
-            conn.sendall(str.encode(keypad_input))
-
         while True:
             data = conn.recv(1024)
             if not data:
@@ -61,8 +51,13 @@ def dataTransfer(conn):
             print("Command: ", command)
             if command == "GET":
                 reply = GET()  # This is an encrypted message (bytes)
-            elif command == "REPEAT":
-                reply = REPEAT(dataMessage)  # This is a string
+            elif command == "KEYPAD":
+                if useKeypad:
+                    pad = keypad.Keypad()
+                    keypad_input = pad.readKeypad()
+                    reply = enctypt_message(keypad_input)
+                else:
+                    reply = enctypt_message("Keypad is disabled.")
             elif command == "KILL":
                 print("Server is shutting down.")
                 conn.sendall(str.encode("Server shutting down"))
