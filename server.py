@@ -1,9 +1,10 @@
 import socket
 import AES as aes
-from Crypto.Random import get_random_bytes
+import keypad as keypad
 
 host = ""
 port = 5560
+useKeypad = False
 
 def setupSocketServer():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,10 +42,15 @@ def GET():
 def REPEAT(dataMessage):
     return dataMessage[1] if len(dataMessage) > 1 else "No data provided"
 
-
 def dataTransfer(conn):
     conn.settimeout(60)  # Set a timeout for client connection
     try:
+        if useKeypad:
+            pad = keypad.Keypad()
+            keypad_input = pad.readKeypad()
+            print("Keypad input: ", keypad_input)
+            conn.sendall(str.encode(keypad_input))
+
         while True:
             data = conn.recv(1024)
             if not data:
