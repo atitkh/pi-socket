@@ -33,6 +33,7 @@ def enctypt_message(message):
     key = "UASecretPassword"
     key = key.encode("utf-8")
     cipher = aes.AESCipher(key)
+    print("Message: ", message)
     encrypted_message = cipher.encrypt(message)
     print("Encrypted message (Bytes): ", encrypted_message)
     return encrypted_message
@@ -62,8 +63,8 @@ def dataTransfer(conn):
             data = data.decode("utf-8")
             dataMessage = data.split(" ", 1)
             command = dataMessage[0]
+            print("Received: ", data)
             command = decrypt_message(command)
-            print("Command: ", command)
             if command == "GET":
                 reply = GET()  # This is an encrypted message (bytes)
             elif command == "KEYPAD":
