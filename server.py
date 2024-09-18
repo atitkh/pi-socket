@@ -1,10 +1,12 @@
 import socket
 import AES as aes
+
 import keypad as keypad
 
 host = ""
 port = 5560
 useKeypad = True
+
 
 def setupSocketServer():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,17 +28,29 @@ def setupConnection(s):
     print(address[0] + ":" + str(address[1]) + " has connected.")
     return client_conn
 
+
 def enctypt_message(message):
     key = "UASecretPassword"
-    key = key.encode('utf-8')
+    key = key.encode("utf-8")
     cipher = aes.AESCipher(key)
     encrypted_message = cipher.encrypt(message)
     print("Encrypted message (Bytes): ", encrypted_message)
     return encrypted_message
 
+
+def decrypt_message(encrypted_message):
+    key = "UASecretPassword"
+    key = key.encode("utf-8")
+    cipher = aes.AESCipher(key)
+    decrypted_message = cipher.decrypt(encrypted_message)
+    print("Decrypted message: ", decrypted_message)
+    return decrypted_message
+
+
 def GET():
     encrypted_message = enctypt_message("Hello World. What is UP? You GOodD?")
     return encrypted_message
+
 
 def dataTransfer(conn):
     conn.settimeout(60)  # Set a timeout for client connection
@@ -48,6 +62,7 @@ def dataTransfer(conn):
             data = data.decode("utf-8")
             dataMessage = data.split(" ", 1)
             command = dataMessage[0]
+            command = decrypt_message(command)
             print("Command: ", command)
             if command == "GET":
                 reply = GET()  # This is an encrypted message (bytes)
@@ -68,9 +83,13 @@ def dataTransfer(conn):
 
             # Send reply
             if isinstance(reply, bytes):
-                conn.sendall(reply)  # If reply is already bytes (like encrypted message), send it directly
+                conn.sendall(
+                    reply
+                )  # If reply is already bytes (like encrypted message), send it directly
             else:
-                conn.sendall(str.encode(reply))  # If reply is a string, encode it to bytes first
+                conn.sendall(
+                    str.encode(reply)
+                )  # If reply is a string, encode it to bytes first
 
             print("Data has been sent!")
     except socket.timeout:
