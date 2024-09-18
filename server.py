@@ -1,7 +1,9 @@
 import socket
 import AES as aes
-
 import keypad as keypad
+import os
+from dotenv import load_dotenv, dotenv_values 
+load_dotenv()
 
 host = ""
 port = 5560
@@ -30,7 +32,7 @@ def setupConnection(s):
 
 
 def enctypt_message(message):
-    key = "UASecretPassword"
+    key = os.getenv("SECRET_KEY")
     key = key.encode("utf-8")
     cipher = aes.AESCipher(key)
     print("Message: ", message)
@@ -40,7 +42,7 @@ def enctypt_message(message):
 
 
 def decrypt_message(encrypted_message):
-    key = "UASecretPassword"
+    key = os.getenv("SECRET_KEY")
     key = key.encode("utf-8")
     cipher = aes.AESCipher(key)
     decrypted_message = cipher.decrypt(encrypted_message)
