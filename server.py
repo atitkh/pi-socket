@@ -1,8 +1,10 @@
 import socket
 import AES as aes
-import keypad as keypad
+
+# import keypad as keypad
 import os
-from dotenv import load_dotenv, dotenv_values 
+from dotenv import load_dotenv, dotenv_values
+
 load_dotenv()
 
 host = ""
@@ -51,7 +53,7 @@ def decrypt_message(encrypted_message):
 
 
 def GET():
-    encrypted_message = enctypt_message("Hello World. What is UP? You GOodD?")
+    encrypted_message = enctypt_message("Hello world! Test message 123.")
     return encrypted_message
 
 
@@ -71,10 +73,10 @@ def dataTransfer(conn):
                 reply = GET()  # This is an encrypted message (bytes)
             elif command == "KEYPAD":
                 if useKeypad:
-                    pad = keypad.Keypad()
-                    keypad_input = pad.readKeypad()
-                    reply = enctypt_message(keypad_input)
-                else:
+                    #     pad = keypad.Keypad()
+                    #     keypad_input = pad.readKeypad()
+                    #     reply = enctypt_message(keypad_input)
+                    # else:
                     reply = enctypt_message("Keypad is disabled.")
             elif command == "KILL":
                 print("Server is shutting down.")
