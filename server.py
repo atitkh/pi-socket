@@ -4,6 +4,7 @@ import AES as aes
 # import keypad as keypad
 import os
 from dotenv import load_dotenv, dotenv_values
+from modbus_test import get_modbus
 
 load_dotenv()
 
@@ -71,6 +72,9 @@ def dataTransfer(conn):
             command = decrypt_message(command)
             if command == "GET":
                 reply = GET()  # This is an encrypted message (bytes)
+            elif command == "MODBUS":
+                m_message = get_modbus('{"request":"read"}').decode("utf-8")
+                reply = enctypt_message(m_message)
             elif command == "KEYPAD":
                 if useKeypad:
                     #     pad = keypad.Keypad()
