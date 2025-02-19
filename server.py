@@ -69,11 +69,13 @@ def dataTransfer(conn):
             dataMessage = data.split(" ", 1)
             command = dataMessage[0]
             print("Received: ", data)
-            command = decrypt_message(command)
+            # command = decrypt_message(command)
             if command == "GET":
                 reply = GET()  # This is an encrypted message (bytes)
-            elif command == "MODBUS":
-                m_message = get_modbus('{"request":"read"}').decode("utf-8")
+            elif command == "GET":
+                # m_message = get_modbus(['{"request":"read"}']).decode("utf-8")
+                m_message = get_modbus([0, 1, 2, 3, 4, 5, 6, 7])
+                m_message = str(m_message)
                 reply = enctypt_message(m_message)
             elif command == "MODBUS_TEST":
                 m_message = {"outputs":{"A_in_purge":0.47238958575447976,"B_in_purge":0.084946193242193602,"C_in_purge":0.4426642210033267,"cost":0,"f1_flow":640.46000000000004,"f2_flow":0,"liquid_level":44.153205584977918,"pressure":2701.8466171614818,"product_flow":21.320768684966009,"purge_flow":0},"state":{"f1_valve_pos":100,"f2_valve_pos":0,"product_valve_pos":10.023651483939879,"purge_valve_pos":0}}
