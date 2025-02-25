@@ -68,13 +68,13 @@ def dataTransfer(conn):
             data = data.decode("utf-8")
             dataMessage = data.split(" ", 1)
             command = dataMessage[0]
-            print("Received: ", data)
-            # command = decrypt_message(command)
+            command = decrypt_message(command)
+            print("Received: ", data, " Command: ", command)
             if command == "GET":
                 reply = GET()  # This is an encrypted message (bytes)
-            elif command == "GET":
+            elif command == "GET_MODBUS":
                 # m_message = get_modbus(['{"request":"read"}']).decode("utf-8")
-                m_message = get_modbus([0, 1, 2, 3, 4, 5, 6, 7])
+                m_message = get_modbus([0, 1, 2, 3])
                 m_message = str(m_message)
                 reply = enctypt_message(m_message)
             elif command == "MODBUS_TEST":
@@ -101,12 +101,13 @@ def dataTransfer(conn):
                 conn.sendall(
                     reply
                 )  # If reply is already bytes (like encrypted message), send it directly
+                print("Data has been sent!")
             else:
                 conn.sendall(
                     str.encode(reply)
                 )  # If reply is a string, encode it to bytes first
+                print("Data has been sent!")
 
-            print("Data has been sent!")
     except socket.timeout:
         print("Connection timed out.")
     except socket.error as e:
