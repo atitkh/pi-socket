@@ -44,3 +44,23 @@ def get_modbus(index):
     finally:
         # Close connection
         client.close()
+
+def set_modbus(index, value):
+    try:
+        # Connect to OpenPLC
+        client = ModbusTcpClient(plc_ip, port=plc_port)
+        client.connect()
+
+        # Write to holding register
+        result = client.write_coil(index, value)
+
+        # Check if the write was successful
+        if not result.isError():
+            print(f"Wrote {value} to coil {index}")
+        else:
+            print(f"Error writing coil: {result}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        # Close connection
+        client.close()
